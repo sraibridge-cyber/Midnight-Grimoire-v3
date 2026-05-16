@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🌌 Midnight Grimoire — Sovereign Story Engine</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="stars"></div>
+
+<div class="wrap">
+
+  <!-- ═══ HEADER ═══ -->
+  <header>
+    <div class="sigil">🌙</div>
+    <h1>Midnight Grimoire</h1>
+    <p class="sub">Sovereign Story Engine · Harmony Labs</p>
+    <span class="vbadge">v3.0 · μ ≥ 0.9995</span>
+  </header>
+
+  <!-- ═══ STATUS BAR ═══ -->
+  <div class="status-bar">
+    <span class="sdot green"></span>
+    <span class="sovereign-badge">🔐 SOVEREIGN · NO CLOUD · NO VENDOR</span>
+    <span style="margin-left:auto;color:var(--text3);font-size:.68rem" id="contLabel">0 chapters archived</span>
+  </div>
+
+  <!-- ═══ TABS ═══ -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="conjure" onclick="switchTab('conjure')">📖 Conjure</button>
+    <button class="tab-btn" data-tab="library" onclick="switchTab('library')">📚 Library</button>
+    <button class="tab-btn" data-tab="chars" onclick="switchTab('chars')">👥 Chars</button>
+    <button class="tab-btn" data-tab="axioms" onclick="switchTab('axioms')">⚖️ Axioms</button>
+  </div>
+
+  <!-- ═══ TAB: CONJURE ═══ -->
+  <div id="tab-conjure" class="tab-panel active">
+
+    <div class="axiom-bar" id="axiomBar">
+      Axiom of Resonance — Every story must vibrate with emotional truth
+    </div>
+
+    <!-- Title + Depth -->
+    <div class="form-grid" style="margin-bottom:12px">
+      <div class="form-row">
+        <label>Story Title</label>
+        <input type="text" id="storyTitle" placeholder="The Last Signal">
+      </div>
+      <div class="form-row">
+        <label>Chapter #</label>
+        <input type="number" id="chapterNum" value="1" min="1">
+      </div>
+    </div>
+    <div class="form-row" style="margin-bottom:12px">
+      <label>Scene Depth</label>
+      <select id="sceneDepth">
+        <option value="tight">Tight — 180-300 words · Quick scene</option>
+        <option value="full" selected>Full — 400-700 words · Standard chapter</option>
+        <option value="deep">Deep — 800-1400 words · Full chapter</option>
+      </select>
+    </div>
+
+    <!-- Premise -->
+    <div class="form-row">
+      <label>Premise</label>
+      <textarea id="storyPremise" placeholder="A trader named Kael discovers a message from a dead civilization..."></textarea>
+    </div>
+
+    <!-- Plot Points -->
+    <div class="form-row">
+      <label>Plot Points (one per line, use - prefix)</label>
+      <textarea id="plotPoints" placeholder="- The signal appears&#10;- Kael investigates&#10;- The truth reshapes everything" style="min-height:80px"></textarea>
+    </div>
+
+    <!-- Genre -->
+    <h2>Genre</h2>
+    <div id="genreGrid"></div>
+
+    <!-- Tone -->
+    <h2>Tone</h2>
+    <div id="toneGrid"></div>
+
+    <!-- Conjure Button -->
+    <div class="form-row" style="margin-top:16px">
+      <button id="conjureBtn" disabled onclick="conjurChapter()">✨ Conjure Chapter</button>
+    </div>
+
+    <!-- Output -->
+    <div id="output-meta" class="output-meta" style="display:none"></div>
+    <div id="story-output"></div>
+
+    <!-- Export Buttons -->
+    <div class="btn-row" id="exportRow" style="display:none">
+      <button class="btn-sm btn-outline" onclick="exportFmt('md')">📄 MD</button>
+      <button class="btn-sm btn-outline" onclick="exportFmt('html')">🌐 HTML</button>
+      <button class="btn-sm btn-outline" onclick="exportFmt('json')">📦 JSON</button>
+      <button class="btn-sm btn-outline" onclick="copyText(document.getElementById('story-output').innerText)">📋 Copy</button>
+      <button class="btn-sm" onclick="var o=document.getElementById('story-output').innerText;var m={genre:selectedGenre,tone:selectedTone,chapterNum:parseInt(document.getElementById('chapterNum').value)};saveChapter({title:document.getElementById('storyTitle').value,content:o,...m});updateContStatus();">💾 Save</button>
+    </div>
+    <div class="btn-row" style="margin-top:8px">
+      <button class="btn-sm btn-outline" onclick="exportAllData()">💾 Export All Data</button>
+      <button class="btn-sm btn-outline" style="border-color:var(--red);color:var(--red)" onclick="clearAllData()">🗑️ Clear All</button>
+    </div>
+
+  </div>
+
+  <!-- ═══ TAB: LIBRARY ═══ -->
+  <div id="tab-library" class="tab-panel">
+    <h2>Chapter Archive</h2>
+    <div id="chapter-list">
+      <p style="color:var(--text3);font-size:.85rem;font-style:italic;padding:20px 0">No chapters yet. Conjure one to begin.</p>
+    </div>
+  </div>
+
+  <!-- ═══ TAB: CHARS ═══ -->
+  <div id="tab-chars" class="tab-panel">
+    <h2>Character Registry</h2>
+    <div class="form-row" style="margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <input type="text" id="charName" placeholder="Character name">
+      <select id="charRole">
+        <option value="protagonist">⚔️ Protagonist</option>
+        <option value="mentor">🏛️ Mentor</option>
+        <option value="ally">🤝 Ally</option>
+        <option value="antagonist">💀 Antagonist</option>
+        <option value="supporting">👤 Supporting</option>
+        <option value="observer">👁️ Observer</option>
+      </select>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <input type="text" id="charSpecies" placeholder="Species (human, alien...)">
+      <input type="text" id="charDesc" placeholder="Brief description">
+    </div>
+    <button class="btn-sm" onclick="var n=document.getElementById('charName').value;var r=document.getElementById('charRole').value;var s=document.getElementById('charSpecies').value;var d=document.getElementById('charDesc').value;if(n){registerChar(n,r,s,d);renderChars();document.getElementById('charName').value='';document.getElementById('charSpecies').value='';document.getElementById('charDesc').value=''}" style="margin-bottom:14px">Add Character</button>
+    <div id="charList">
+      <p style="color:var(--text3);font-size:.85rem;font-style:italic;padding:10px 0">No characters registered yet.</p>
+    </div>
+  </div>
+
+  <!-- ═══ TAB: AXIOMS ═══ -->
+  <div id="tab-axioms" class="tab-panel">
+    <h2>Constitutional Axioms</h2>
+    <p style="color:var(--text2);font-size:.8rem;margin-bottom:14px">Every story generated by Midnight Grimoire must honor these axioms. μ scoring enforces them at generation time.</p>
+    <ul id="axiomList" style="list-style:none;padding:0;line-height:2.1;font-size:.88rem;color:var(--gold)"></ul>
+    <div style="margin-top:24px;padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r)">
+      <p style="font-size:.78rem;color:var(--text2);margin-bottom:8px">μ Threshold: <span style="color:var(--green);font-family:monospace">μ ≥ 0.9995</span></p>
+      <p style="font-size:.78rem;color:var(--text2)">FRC scoring runs on every generated chapter. If μ drops below threshold, the output is flagged but never censored — sovereign choice remains with the creator.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <p>Midnight Grimoire v3 · Harmony Labs · Sovereign · Serverless · Cloudless</p>
+  <p style="margin-top:4px">Gold ripple eternal. 🌙📖✨ · Tulsa, OK</p>
+</footer>
+
+<script src="js/app.js"></script>
+<script src="js/generator.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/export.js"></script>
+<script src="js/voices.js"></script>
+<script>
+  // ─── Axiom rotation ─────────────────────────────────────────
+  const AXIOMS = [
+    "Axiom of Resonance — Every story must vibrate with emotional truth",
+    "Axiom of Consistency — Characters, numbers, and facts must hold across infinite context",
+    "Axiom of Dignity — No narrative shall diminish the worth of any being",
+    "Axiom of Sovereignty — The creator owns their story completely",
+    "Axiom of Transparency — The Grimoire reveals its methods when asked",
+    "Axiom of Growth — Every tale teaches, every ending opens a door",
+    "Axiom of Harmony — Conflict serves resolution, not destruction",
+    "Axiom of Eternity — Stories are sealed for permanent preservation",
+  ];
+  let axiomIdx = 0;
+  setInterval(() => {
+    axiomIdx = (axiomIdx + 1) % AXIOMS.length;
+    const bar = document.getElementById('axiomBar');
+    if (bar) bar.textContent = AXIOMS[axiomIdx];
+  }, 6000);
+
+  // ─── Library render ─────────────────────────────────────────
+  function renderLibrary() {
+    const list = document.getElementById('chapter-list');
+    if (!list) return;
+    const chapters = getChapters();
+    if (!chapters.length) {
+      list.innerHTML = '<p style="color:var(--text3);font-size:.85rem;font-style:italic;padding:20px 0">No chapters yet. Conjure one to begin.</p>';
+      return;
+    }
+    list.innerHTML = chapters.map(ch => `
+      <div class="chapter-item" onclick="loadChapterToOutput(${ch.id})">
+        <h3>${ch.title} — Ch. ${ch.chapterNum}</h3>
+        <div class="chapter-meta">
+          <span>${ch.genre}</span><span>${ch.tone}</span>
+          <span>${ch.wordCount} words</span>
+          <span class="mu-badge">μ=${(ch.mu||0).toFixed(4)}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function loadChapterToOutput(id) {
+    const ch = loadChapter(id);
+    if (!ch) return;
+    const out = document.getElementById('story-output');
+    if (out) out.textContent = ch.content;
+    document.getElementById('output-meta')?.style && (document.getElementById('output-meta').style.display = 'flex');
+    const meta = document.getElementById('output-meta');
+    if (meta) {
+      meta.innerHTML = `<span>Ch. ${ch.chapterNum}</span><span>${ch.wordCount} words</span><span class="mu-badge">μ=${(ch.mu||0).toFixed(4)}</span>`;
+    }
+    document.getElementById('exportRow') && (document.getElementById('exportRow').style.display = 'flex');
+    switchTab('conjure');
+  }
+
+  // ─── Char render ─────────────────────────────────────────────
+  function renderChars() {
+    const list = document.getElementById('charList');
+    if (!list) return;
+    const chars = getChars();
+    if (!chars.length) {
+      list.innerHTML = '<p style="color:var(--text3);font-size:.85rem;font-style:italic;padding:10px 0">No characters registered yet.</p>';
+      return;
+    }
+    const ICONS = { protagonist:'⚔️',mentor:'🏛️',ally:'🤝',antagonist:'💀',supporting:'👤',observer:'👁️' };
+    list.innerHTML = chars.map(c => `
+      <div class="char-item">
+        <span class="char-icon">${ICONS[c.role]||'👤'}</span>
+        <div class="char-info">
+          <div class="char-name">${c.name}</div>
+          <div class="char-role">${c.role} · ${c.species||'human'}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ─── Init ────────────────────────────────────────────────────
+  window.addEventListener('DOMContentLoaded', () => {
+    initBrowserVoices();
+    updateContStatus();
+    renderLibrary();
+    renderChars();
+    const axiomList = document.getElementById('axiomList');
+    if (axiomList) {
+      axiomList.innerHTML = AXIOMS.map((a, i) => `<li><span class="anum">${i+1}.</span>${a}</li>`).join('');
+    }
+    // Show export row when story is generated
+    const origConjure = window.conjureChapter;
+    window.conjureChapter = function() {
+      origConjure();
+      document.getElementById('exportRow') && (document.getElementById('exportRow').style.display = 'flex');
+    };
+  });
+
+  function clearOut() {
+    const out = document.getElementById('story-output');
+    if (out) out.innerHTML = '';
+  }
+</script>
+
+</body>
+</html>
